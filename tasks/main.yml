@@ -1,2 +1,25 @@
 ---
 # tasks file for haproxy
+- name: Ensure dependencies are installed.
+  apt:
+    name:
+      - software-properties-common
+    state: present
+
+  
+- name: Add haproxy repository.
+  ansible.builtin.apt_repository:
+    repo: ppa:vbernat/haproxy-2.2
+    state: present
+    update_cache: true
+
+- name: Install haproxy.
+  apt:
+    name: haproxy
+    state: present
+
+- name: Copy a basic haproxy.config template
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+  notify: restart haproxy
